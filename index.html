@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulacro de Examen: Modelación Matemática (Extendido)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --accent: #ea580c;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --danger: #ef4444;
+            --danger-light: #fee2e2;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- NUEVOS ESTILOS PARA PAGINACIÓN --- */
+        .section {
+            display: none; /* Ocultar por defecto */
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+        }
+
+        .section.active {
+            display: block; /* Mostrar solo la activa */
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .nav-btn {
+            padding: 15px 30px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover { background-color: #1d4ed8; }
+        .nav-btn.secondary { background-color: var(--text-muted); }
+        .nav-btn.secondary:hover { background-color: #475569; }
+        /* -------------------------------------- */
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .visual-container {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .question {
+            margin-bottom: 35px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--border);
+        }
+        
+        .question:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .open-ended {
+            width: 100%;
+            min-height: 100px;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+        }
+
+        .btn-check {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 40px;
+            margin-bottom: 40px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-check:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Classes for revealing answers */
+        .correct-answer {
+            background-color: var(--success-light) !important;
+            border-color: var(--success) !important;
+        }
+
+        .feedback {
+            display: none;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback-success { background: var(--success-light); border-left: 4px solid var(--success); }
+        .feedback-info { background: var(--primary-light); border-left: 4px solid var(--primary); }
+
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .dashboard-table th, .dashboard-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .dashboard-table th { background-color: var(--primary); color: white; }
+        .p-high { color: var(--danger); font-weight: bold; }
+        .p-low { color: var(--success); font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Simulacro Interactivo de Modelación</h1>
+        <p id="progress-text" style="font-weight: bold; color: var(--primary); margin-top: 15px; font-size: 1.2rem;"></p>
+    </div>
+
+    <!-- SECCIÓN 1 -->
+    <div class="section">
+        <h2 class="section-title">Parte 1: Formas Funcionales y Ritmos de Cambio</h2>
+        <p style="margin-bottom: 20px;">Observa las siguientes curvas que modelan el crecimiento de usuarios en dos plataformas tecnológicas distintas (Plataforma A y Plataforma B) durante sus primeras 20 semanas.</p>
+        
+        <div class="visual-container">
+            <svg viewBox="0 0 600 300" width="100%" max-width="600px">
+                <line x1="50" y1="250" x2="550" y2="250" stroke="#64748b" stroke-width="2"/>
+                <line x1="50" y1="250" x2="50" y2="30" stroke="#64748b" stroke-width="2"/>
+                
+                <!-- Techo para A -->
+                <line x1="50" y1="60" x2="550" y2="60" stroke="#94a3b8" stroke-dasharray="8,8" stroke-width="2"/>
+                <text x="560" y="65" fill="#64748b" font-size="14">Límite</text>
+
+                <!-- Curva A (Logística) -->
+                <path d="M 50 240 C 250 240, 200 65, 550 65" fill="none" stroke="#2563eb" stroke-width="4"/>
+                <text x="400" y="85" fill="#2563eb" font-weight="bold" font-size="16">Plataforma A</text>
+
+                <!-- Curva B (Logarítmica) -->
+                <path d="M 50 250 Q 150 150 550 100" fill="none" stroke="#ea580c" stroke-width="4"/>
+                <text x="400" y="125" fill="#ea580c" font-weight="bold" font-size="16">Plataforma B</text>
+            </svg>
+        </div>
+
+        <div class="question">
+            <div class="question-text">1. Basándote puramente en la geometría y el comportamiento asintótico, ¿qué funciones modelan matemáticamente a las Plataformas A y B respectivamente?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q1"> a) A: Exponencial | B: Lineal</label>
+                <label class="option-label" id="q1-correct"><input type="radio" name="q1"> b) A: Logística | B: Logarítmica</label>
+                <label class="option-label"><input type="radio" name="q1"> c) A: Potencia | B: Exponencial</label>
+                <label class="option-label"><input type="radio" name="q1"> d) A: Logarítmica | B: Logística</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q1">
+                <strong>Correcto (b):</strong> La curva A crece con aceleración y luego se frena al acercarse a un techo horizontal (comportamiento Logístico o en S). La curva B crece rápido al inicio y se sigue frenando constantemente sin un límite absoluto (comportamiento Logarítmico).
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">2. Si la Plataforma B se modela con la función $y = a + b \ln(x)$, ¿cuál es el postulado sobre su derivada (ritmo de cambio) y qué significa en la vida real?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q2"> a) dy/dx = b·y. Significa que el crecimiento es proporcional a los usuarios actuales.</label>
+                <label class="option-label" id="q2-correct"><input type="radio" name="q2"> b) dy/dx = b/x. Significa que cada semana adicional que pasa aporta cada vez menos usuarios nuevos.</label>
+                <label class="option-label"><input type="radio" name="q2"> c) dy/dx = b. Significa que la plataforma crece al mismo ritmo constante siempre.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q2">
+                <strong>Correcto (b):</strong> La derivada del logaritmo natural es 1/x. Esto implica rendimientos decrecientes: el insumo (x, tiempo) siempre ayuda a crecer, pero cada vez aporta menos.
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">3. Imagina una tercera plataforma donde "duplicar la inversión en marketing multiplica los usuarios siempre por un mismo factor (ej. x3.04)", sin importar si invierten poco o mucho. ¿Qué modelo funcional representa este comportamiento?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q3"> a) Exponencial ($y = a \cdot e^{bx}$)</label>
+                <label class="option-label"><input type="radio" name="q3"> b) Logarítmico ($y = a + b \ln x$)</label>
+                <label class="option-label" id="q3-correct"><input type="radio" name="q3"> c) De Potencia o Log-Log ($y = a \cdot x^b$)</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q3">
+                <strong>Correcto (c):</strong> El modelo de Potencia tiene un "efecto porcentual constante" (elasticidad constante). Si $x$ se duplica (+100%), $y$ se multiplica por un factor fijo, lo cual es característico de las curvas de aprendizaje o redes.
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 2 (NUEVA): OPTIMIZACIÓN Y CURVAS -->
+    <div class="section">
+        <h2 class="section-title">Parte 2: Optimización (Primera y Segunda Derivada)</h2>
+        <p style="margin-bottom: 20px;">El departamento financiero de una empresa modeló sus utilidades mensuales $U(x)$ en miles de dólares, dependiendo de la cantidad de unidades fabricadas $x$. El modelo parabólico obtenido es: <strong>$U(x) = -2x^2 + 120x - 1000$</strong></p>
+        
+        <div class="visual-container">
+            <svg viewBox="0 0 600 300" width="100%" max-width="600px">
+                <line x1="50" y1="250" x2="550" y2="250" stroke="#64748b" stroke-width="2"/>
+                <line x1="50" y1="250" x2="50" y2="30" stroke="#64748b" stroke-width="2"/>
+                <text x="290" y="270" fill="#64748b">Unidades (x)</text>
+                <text x="10" y="150" fill="#64748b" transform="rotate(-90 20,150)">Utilidad (U)</text>
+                
+                <!-- Parabola -->
+                <path d="M 100 250 Q 300 -100 500 250" fill="none" stroke="#10b981" stroke-width="4"/>
+                
+                <!-- Tangentes -->
+                <!-- Subiendo -->
+                <line x1="120" y1="220" x2="220" y2="70" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4"/>
+                <circle cx="170" cy="145" r="5" fill="#3b82f6"/>
+                <!-- Pico -->
+                <line x1="250" y1="40" x2="350" y2="40" stroke="#ea580c" stroke-width="3"/>
+                <circle cx="300" cy="40" r="7" fill="#ea580c"/>
+                <line x1="300" y1="40" x2="300" y2="250" stroke="#94a3b8" stroke-dasharray="4" stroke-width="1"/>
+                <!-- Bajando -->
+                <line x1="380" y1="70" x2="480" y2="220" stroke="#ef4444" stroke-width="2" stroke-dasharray="4"/>
+                <circle cx="430" cy="145" r="5" fill="#ef4444"/>
+            </svg>
+        </div>
+
+        <div class="question">
+            <div class="question-text">4. Calcula mentalmente o en papel la primera derivada $U'(x)$. ¿Cuál es la ecuación correcta y qué representa en la economía del negocio?</div>
+            <div class="options">
+                <label class="option-label" id="q4-correct"><input type="radio" name="q4"> a) $U'(x) = -4x + 120$. Representa la "utilidad marginal": cuánto dinero extra genera fabricar UNA unidad adicional.</label>
+                <label class="option-label"><input type="radio" name="q4"> b) $U'(x) = -2x + 120$. Representa el costo total de producción.</label>
+                <label class="option-label"><input type="radio" name="q4"> c) $U'(x) = -4x$. Representa la pérdida neta de la empresa por cada unidad.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q4">
+                <strong>Correcto (a):</strong> Usando la regla de la potencia, bajamos el 2 y multiplicamos: $-2(2)x^{2-1} + 120(1) - 0 = -4x + 120$. La primera derivada de la Utilidad siempre se interpreta como la Utilidad Marginal.
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">5. Usando el Criterio de la Primera Derivada, ¿cuántas unidades ($x$) se deben fabricar para alcanzar la utilidad máxima (el pico de la curva naranja)?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q5"> a) x = 120</label>
+                <label class="option-label"><input type="radio" name="q5"> b) x = 60</label>
+                <label class="option-label" id="q5-correct"><input type="radio" name="q5"> c) x = 30</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q5">
+                <strong>Correcto (c):</strong> Para hallar el máximo, igualamos la primera derivada a cero (donde la tangente es horizontal). $-4x + 120 = 0 \implies 4x = 120 \implies x = 30$.
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">6. Calcula la segunda derivada $U''(x)$. ¿Qué valor tiene y qué garantiza este resultado matemáticamente?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q6"> a) $U''(x) = 120$. Es positivo, garantiza que la curva es cóncava hacia arriba (es un mínimo).</label>
+                <label class="option-label" id="q6-correct"><input type="radio" name="q6"> b) $U''(x) = -4$. Es negativo, garantiza que la curva es cóncava hacia abajo en todo su dominio (el punto crítico es un máximo absoluto).</label>
+                <label class="option-label"><input type="radio" name="q6"> c) $U''(x) = 0$. Significa que hay un punto de inflexión continuo.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q6">
+                <strong>Correcto (b):</strong> Derivando $U'(x) = -4x + 120$, obtenemos $U''(x) = -4$. Al ser una constante negativa, la parábola "abre hacia abajo" siempre. Por lo tanto, cualquier punto donde la pendiente sea cero es obligatoriamente una cima (máximo).
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 3 -->
+    <div class="section">
+        <h2 class="section-title">Parte 3: Inferencia en Regresión Múltiple</h2>
+        <p style="margin-bottom: 20px;">Un equipo agrícola modeló el Rendimiento de un cultivo (toneladas) usando tres variables: Agua (Litros), Fertilizante (Kg) y Nivel_Plagas (Escala 1-10). Observa el panel de resultados del modelo (Nivel de significancia $\alpha = 0.05$):</p>
+        
+        <div class="visual-container" style="display: block;">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Coeficiente estimado ($b_i$)</th>
+                        <th>Valor p (p-value)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Agua_Litros ($x_1$)</td>
+                        <td>+ 2.45</td>
+                        <td class="p-low">0.001</td>
+                    </tr>
+                    <tr>
+                        <td>Fertilizante_Kg ($x_2$)</td>
+                        <td>+ 0.89</td>
+                        <td class="p-high">0.315</td>
+                    </tr>
+                    <tr>
+                        <td>Nivel_Plagas ($x_3$)</td>
+                        <td>- 5.30</td>
+                        <td class="p-low">0.024</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="text-align: right; margin-top: 10px; font-weight: 600;">$R^2$ múltiple = 0.84 | $R^2$ ajustado = 0.81</p>
+        </div>
+
+        <div class="question">
+            <div class="question-text">7. Según la inferencia estadística, ¿cuál de estas variables NO está aportando un efecto real comprobable al rendimiento del cultivo y debería ser descartada?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q7"> a) Agua_Litros</label>
+                <label class="option-label" id="q7-correct"><input type="radio" name="q7"> b) Fertilizante_Kg</label>
+                <label class="option-label"><input type="radio" name="q7"> c) Nivel_Plagas</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q7">
+                <strong>Correcto (b):</strong> El valor p de Fertilizante (0.315) es mucho mayor que el umbral de 0.05. Esto indica que no hay evidencia suficiente para afirmar que afecta al rendimiento; el coeficiente podría ser producto del azar.
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">8. ¿Cómo se interpreta el coeficiente de "+ 2.45" de la variable Agua_Litros en este modelo de regresión múltiple?</div>
+            <div class="options">
+                <label class="option-label" id="q8-correct"><input type="radio" name="q8"> a) Por cada Litro adicional de agua, el rendimiento aumenta en 2.45 toneladas, asumiendo que el fertilizante y las plagas se mantienen constantes.</label>
+                <label class="option-label"><input type="radio" name="q8"> b) El agua es responsable del 2.45% del rendimiento total de la cosecha.</label>
+                <label class="option-label"><input type="radio" name="q8"> c) Si agregamos 2.45 litros de agua, el rendimiento aumentará en 1 tonelada.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q8">
+                <strong>Correcto (a):</strong> En regresión múltiple, el coeficiente indica el cambio en $y$ por cada unidad de $x$, aislando el efecto de las demás variables (es decir, manteniéndolas constantes o *ceteris paribus*).
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">9. Si decides correr un nuevo modelo eliminando la variable "Fertilizante_Kg", ¿qué pasará con la métrica del $R^2$ Ajustado y por qué? (Respuesta libre)</div>
+            <textarea class="open-ended" placeholder="Escribe tu justificación aquí..."></textarea>
+            <div class="feedback feedback-info" id="fb-q9">
+                <strong>Rúbrica de Respuesta:</strong> Se espera que el estudiante responda que el $R^2$ Ajustado <strong>subirá o se mantendrá estable</strong>. La justificación debe mencionar que el $R^2$ ajustado penaliza la inclusión de variables inútiles. Al quitar el fertilizante (que no era significativo), el modelo se vuelve más eficiente y el castigo matemático del $R^2$ ajustado desaparece.
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 4 -->
+    <div class="section">
+        <h2 class="section-title">Parte 4: El Modelo Logístico y la "S"</h2>
+        <p style="margin-bottom: 20px;">Un nuevo producto tecnológico penetra un mercado de 2,000 personas. El gráfico superior muestra la acumulación total de ventas $y(t)$ (S-curve), y el inferior muestra su derivada $y'(t)$ (ventas nuevas por día).</p>
+        
+        <div class="visual-container">
+            <svg viewBox="0 0 600 350" width="100%" max-width="600px">
+                <!-- Curva Superior (Acumulada) -->
+                <line x1="50" y1="150" x2="550" y2="150" stroke="#94a3b8" stroke-width="2"/>
+                <line x1="50" y1="20" x2="550" y2="20" stroke="#1e293b" stroke-dasharray="6,6" stroke-width="2"/>
+                <text x="10" y="25" fill="#1e293b" font-weight="bold">2000</text>
+                <text x="10" y="85" fill="#ea580c" font-weight="bold">1000</text>
+                
+                <path d="M 50 145 C 250 145, 200 25, 550 25" fill="none" stroke="#2563eb" stroke-width="4"/>
+                
+                <!-- Punto de inflexion -->
+                <circle cx="225" cy="85" r="7" fill="#ea580c"/>
+                <line x1="50" y1="85" x2="225" y2="85" stroke="#ea580c" stroke-dasharray="4" stroke-width="2"/>
+                <line x1="225" y1="20" x2="225" y2="150" stroke="#ea580c" stroke-dasharray="4" stroke-width="2"/>
+
+                <!-- Grafico Inferior (Derivada) -->
+                <line x1="50" y1="320" x2="550" y2="320" stroke="#94a3b8" stroke-width="2"/>
+                <path d="M 50 315 Q 225 180 225 180 T 550 315" fill="none" stroke="#ea580c" stroke-width="3"/>
+                
+                <line x1="225" y1="150" x2="225" y2="320" stroke="#ea580c" stroke-dasharray="4" stroke-width="2"/>
+                <circle cx="225" cy="180" r="7" fill="#ea580c"/>
+                
+                <text x="210" y="340" fill="#64748b" font-weight="bold">Día 9.1</text>
+                <text x="250" y="100" fill="#ea580c" font-weight="bold">Punto de Inflexión</text>
+            </svg>
+        </div>
+
+        <div class="question">
+            <div class="question-text">10. La ecuación diferencial del modelo logístico es $dy/dt = r \cdot y (1 - y/K)$. ¿Qué representan visual y conceptualmente los dos componentes multiplicativos: $y$ y $(1-y/K)$?</div>
+            <div class="options">
+                <label class="option-label" id="q10-correct"><input type="radio" name="q10"> a) El factor "y" empuja el crecimiento exponencial (lo que ya hay), mientras el factor "(1-y/K)" frena el crecimiento basado en el espacio libre que falta para llegar al techo K.</label>
+                <label class="option-label"><input type="radio" name="q10"> b) "y" representa el tiempo, y "K" representa la velocidad de ventas inicial.</label>
+                <label class="option-label"><input type="radio" name="q10"> c) Son dos errores estadísticos que se anulan entre sí para formar una recta.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q10">
+                <strong>Correcto (a):</strong> El modelo logístico es un "estira y afloja". Al inicio, domina la inercia de los usuarios actuales ($y$). Al final, domina la escasez del mercado restante ($1 - y/K$).
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">11. Observando los gráficos, el punto de inflexión (donde el crecimiento diario alcanza su máximo en el Día 9.1) ocurre exactamente ¿en qué valor de ventas acumuladas ($y$)?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q11"> a) 2000 ventas ($y = K$)</label>
+                <label class="option-label" id="q11-correct"><input type="radio" name="q11"> b) 1000 ventas ($y = K/2$)</label>
+                <label class="option-label"><input type="radio" name="q11"> c) 500 ventas ($y = K/4$)</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q11">
+                <strong>Correcto (b):</strong> En un modelo logístico estándar, el pico máximo de la derivada (la explosión de ventas) siempre ocurre a la mitad matemática de la capacidad de carga ($K/2$). 
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">12. En ese preciso instante (Día 9.1), ¿qué sucede con los valores de la primera y segunda derivada de las ventas acumuladas $y(t)$?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q12"> a) $y'(t)$ es cero, y $y''(t)$ es máxima.</label>
+                <label class="option-label" id="q12-correct"><input type="radio" name="q12"> b) $y'(t)$ alcanza su punto máximo local, por lo que $y''(t)$ (la derivada de la derivada) cruza por el valor CERO.</label>
+                <label class="option-label"><input type="radio" name="q12"> c) Ambas derivadas son negativas porque el producto fracasó.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q12">
+                <strong>Correcto (b):</strong> En un punto de inflexión, la primera derivada llega a su punto más alto (máxima velocidad). Como es un "pico" en la gráfica de velocidad, su propia derivada (la segunda derivada) tiene que ser cero.
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">13. Después del Día 9.1, la segunda derivada $y''(t)$ se vuelve NEGATIVA. ¿Cómo impacta esto en el mundo físico para el director de la empresa?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q13"> a) Significa que los clientes están devolviendo el producto y las ventas totales decrecen.</label>
+                <label class="option-label" id="q13-correct"><input type="radio" name="q13"> b) Las ventas totales siguen creciendo, pero cada día entran MENOS clientes nuevos que el día anterior (el crecimiento desacelera, la curva es cóncava hacia abajo).</label>
+                <label class="option-label"><input type="radio" name="q13"> c) Las ventas se han estancado por completo en cero.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q13">
+                <strong>Correcto (b):</strong> $y''(t) < 0$ implica que la velocidad está disminuyendo (desaceleración). La gráfica superior se vuelve cóncava hacia abajo: sigues subiendo hacia el techo, pero con pasos cada vez más cortos.
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 5 -->
+    <div class="section">
+        <h2 class="section-title">Parte 5: Linealización de Datos (Excel)</h2>
+        <p style="margin-bottom: 20px;">Tienes el archivo <code>Datos_Depreciacion.csv</code>. Un compañero intentó ajustar una línea recta ($y = mx + b$) a los datos crudos (Precio vs Antigüedad). El $R^2$ fue de 0.92, pero al graficar los <strong>Residuos</strong>, obtuvo la siguiente figura:</p>
+        
+        <div class="visual-container">
+            <svg viewBox="0 0 500 200" width="100%" max-width="500px">
+                <line x1="40" y1="100" x2="460" y2="100" stroke="#64748b" stroke-dasharray="6" stroke-width="2"/>
+                <text x="10" y="105" fill="#64748b">0</text>
+                
+                <circle cx="80" cy="40" r="8" fill="#ef4444"/>
+                <circle cx="130" cy="80" r="8" fill="#ef4444"/>
+                <circle cx="180" cy="130" r="8" fill="#ef4444"/>
+                <circle cx="230" cy="160" r="8" fill="#ef4444"/>
+                <circle cx="280" cy="150" r="8" fill="#ef4444"/>
+                <circle cx="330" cy="110" r="8" fill="#ef4444"/>
+                <circle cx="380" cy="60" r="8" fill="#ef4444"/>
+                <circle cx="430" cy="30" r="8" fill="#ef4444"/>
+                
+                <path d="M 80 40 Q 250 230 430 30" fill="none" stroke="#ef4444" stroke-width="2" opacity="0.3"/>
+            </svg>
+        </div>
+
+        <div class="question">
+            <div class="question-text">14. ¿Qué conclusión técnica se extrae inmediatamente al ver este patrón en forma de "U" en los residuos?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q14"> a) Que el modelo es excelente porque el R-cuadrado es superior a 0.90.</label>
+                <label class="option-label" id="q14-correct"><input type="radio" name="q14"> b) Que la relación NO es lineal. Forzar una recta causará que el modelo se equivoque sistemáticamente (sobreestimando en los extremos y subestimando en el centro).</label>
+                <label class="option-label"><input type="radio" name="q14"> c) Que hay que borrar los datos de los extremos porque son valores atípicos (outliers).</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q14">
+                <strong>Correcto (b):</strong> Un patrón definido (como un arco o una U) en los residuos es la prueba irrefutable de que la forma funcional del modelo (la recta) no coincide con la forma física del fenómeno. Se requiere aplicar logaritmos para linealizar.
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">15. Utilizando Excel, aplica la transformación matemática necesaria (logaritmos) para linealizar la nube. Escribe aquí la columna que creaste, la ecuación final que arrojó Excel y el porcentaje de depreciación anual real del vehículo.</div>
+            <textarea class="open-ended" placeholder="Desarrollo de tu respuesta de Excel..."></textarea>
+            <div class="feedback feedback-info" id="fb-q15">
+                <strong>Rúbrica de Excel:</strong> 
+                <br>1. La transformación correcta es calcular <code>=LN(Precio)</code>.
+                <br>2. La regresión debe correrse entre <code>Antigüedad (x)</code> y <code>LN(Precio) (y)</code>.
+                <br>3. La pendiente ($b$) será cercana a <strong>-0.162</strong>.
+                <br>4. Esto significa que el vehículo se deprecia (pierde valor) a una tasa constante del <strong>16.2%</strong> por cada año que pasa.
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 6 (NUEVA): ELASTICIDAD Y MODELOS DE POTENCIA -->
+    <div class="section">
+        <h2 class="section-title">Parte 6: Elasticidad y Estrategia de Precios</h2>
+        <p style="margin-bottom: 20px;">Una empresa de servicios en la nube ajustó los precios ($p$) de su plan básico en diferentes regiones y midió la cantidad de suscripciones ($q$). Al graficar los datos en escala logarítmica (ejes $\ln(p)$ vs $\ln(q)$), obtuvieron una recta perfecta con ecuación: <strong>$\ln(q) = 14.5 - 0.8 \ln(p)$</strong>.</p>
+        
+        <div class="visual-container">
+            <svg viewBox="0 0 600 250" width="100%" max-width="600px">
+                <!-- Ejes -->
+                <line x1="50" y1="200" x2="550" y2="200" stroke="#64748b" stroke-width="2"/>
+                <line x1="50" y1="200" x2="50" y2="30" stroke="#64748b" stroke-width="2"/>
+                <text x="290" y="235" fill="#64748b" font-weight="bold">ln(p) [Precio]</text>
+                <text x="15" y="130" fill="#64748b" font-weight="bold" transform="rotate(-90 20,130)">ln(q) [Suscripciones]</text>
+                
+                <!-- Recta Log-Log -->
+                <line x1="100" y1="50" x2="500" y2="170" stroke="#8b5cf6" stroke-width="4"/>
+                
+                <!-- Triángulo de pendiente -->
+                <line x1="300" y1="110" x2="400" y2="110" stroke="#ea580c" stroke-width="2" stroke-dasharray="4"/>
+                <line x1="400" y1="110" x2="400" y2="140" stroke="#ea580c" stroke-width="2" stroke-dasharray="4"/>
+                <text x="330" y="100" fill="#ea580c" font-weight="bold">+1</text>
+                <text x="415" y="130" fill="#ea580c" font-weight="bold">-0.8</text>
+                
+                <!-- Puntos -->
+                <circle cx="100" cy="50" r="6" fill="#1e293b"/>
+                <circle cx="200" cy="80" r="6" fill="#1e293b"/>
+                <circle cx="300" cy="110" r="6" fill="#1e293b"/>
+                <circle cx="400" cy="140" r="6" fill="#1e293b"/>
+                <circle cx="500" cy="170" r="6" fill="#1e293b"/>
+            </svg>
+        </div>
+
+        <div class="question">
+            <div class="question-text">16. Sabemos que al aplicar logaritmos naturales a ambas variables obtuvimos una recta. ¿Qué forma funcional original (sin logaritmos) relaciona al precio $p$ y la demanda $q$?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q16"> a) Modelo Exponencial ($q = a \cdot e^{-0.8p}$)</label>
+                <label class="option-label"><input type="radio" name="q16"> b) Modelo Logarítmico ($q = a - 0.8 \ln(p)$)</label>
+                <label class="option-label" id="q16-correct"><input type="radio" name="q16"> c) Modelo de Potencia ($q = a \cdot p^{-0.8}$)</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q16">
+                <strong>Correcto (c):</strong> Si ambas variables están transformadas con logaritmos ($\ln(q)$ vs $\ln(p)$), el modelo original es una función de potencia (también llamado modelo log-log). La pendiente de la recta (-0.8) es el exponente de la variable independiente.
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">17. ¿Cómo se interpreta matemáticamente el coeficiente de $-0.8$ en el mundo real para este negocio?</div>
+            <div class="options">
+                <label class="option-label" id="q17-correct"><input type="radio" name="q17"> a) Es la elasticidad constante: Un aumento del 1% en el precio provoca una caída de apenas el 0.8% en las suscripciones.</label>
+                <label class="option-label"><input type="radio" name="q17"> b) Un aumento de $1 dólar en el precio provoca una pérdida exacta de 0.8 suscripciones.</label>
+                <label class="option-label"><input type="radio" name="q17"> c) Cada mes que pasa, la demanda cae un 80%.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q17">
+                <strong>Correcto (a):</strong> En un modelo de potencia, el exponente equivale a la elasticidad. Nos da la relación de cambio porcentual constante, indicando que el efecto del precio es relativo y no absoluto.
+            </div>
+        </div>
+
+        <div class="question">
+            <div class="question-text">18. Como analista financiero, observas que la magnitud de la caída en demanda (0.8%) es MENOR que el aumento de precio (1%). La demanda se considera "inelástica" ($|-0.8| < 1$). Para aumentar los ingresos totales de la empresa ($I = p \cdot q$), ¿qué decisión estratégica recomendarías?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q18"> a) Disminuir el precio para atraer a más clientes masivamente.</label>
+                <label class="option-label" id="q18-correct"><input type="radio" name="q18"> b) Aumentar el precio gradualmente.</label>
+                <label class="option-label"><input type="radio" name="q18"> c) Mantener el precio exactamente igual porque los ingresos ya están maximizados.</label>
+            </div>
+            <div class="feedback feedback-success" id="fb-q18">
+                <strong>Correcto (b):</strong> Debido a que la demanda es inelástica, si subes el precio perderás algunos clientes (0.8%), pero los mayores ingresos generados por el 99.2% de los clientes que se quedan compensarán la fuga. Subir el precio incrementa el ingreso total.
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn secondary" id="btn-prev" onclick="prevSection()">Anterior</button>
+        <button class="nav-btn" id="btn-check-section" onclick="checkCurrentSection()" style="background-color: var(--success);">Revisar Respuestas</button>
+        <button class="nav-btn" id="btn-next" onclick="nextSection()">Siguiente Problema <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i></button>
+    </div>
+
+</div>
+
+<script>
+    // Variables para la paginación
+    let currentSection = 0;
+    let sections = [];
+    let btnPrev, btnNext, progressText;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        sections = document.querySelectorAll('.section');
+        btnPrev = document.getElementById('btn-prev');
+        btnNext = document.getElementById('btn-next');
+        progressText = document.getElementById('progress-text');
+        updateUI();
+    });
+
+    function updateUI() {
+        // Mostrar solo la sección actual
+        sections.forEach((sec, index) => {
+            if(index === currentSection) {
+                sec.classList.add('active');
+            } else {
+                sec.classList.remove('active');
+            }
+        });
+
+        // Configurar visibilidad de botones
+        btnPrev.style.display = currentSection === 0 ? 'none' : 'block';
+        btnNext.style.display = currentSection === sections.length - 1 ? 'none' : 'block';
+        
+        // Actualizar texto de progreso
+        progressText.innerText = `Problema ${currentSection + 1} de ${sections.length}`;
+    }
+
+    function nextSection() {
+        if(currentSection < sections.length - 1) {
+            currentSection++;
+            updateUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function prevSection() {
+        if(currentSection > 0) {
+            currentSection--;
+            updateUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function checkCurrentSection() {
+        const activeSection = sections[currentSection];
+        
+        // Resalta las opciones correctas de la sección activa
+        const correctLabels = activeSection.querySelectorAll('[id$="-correct"]');
+        correctLabels.forEach(label => {
+            label.classList.add('correct-answer');
+            const radio = label.querySelector('input');
+            if(radio) radio.checked = true;
+        });
+
+        // Muestra las cajas de retroalimentación de la sección activa
+        const feedbacks = activeSection.querySelectorAll('.feedback');
+        feedbacks.forEach(fb => {
+            fb.classList.add('show');
+        });
+    }
+</script>
+
+</body>
+</html>
