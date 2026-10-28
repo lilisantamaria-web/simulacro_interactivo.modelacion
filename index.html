@@ -1,10 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    
+<script>
+window.MathJax = {
+    tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        processEscapes: true
+    },
+    options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    chtml: {
+        scale: 1.05
+    }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulacro de Examen: Modelación Matemática (Extendido)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+/* Presentación de las expresiones matemáticas */
+.math-display {
+    display: block;
+    text-align: center;
+    margin: 14px 0;
+    overflow-x: auto;
+    padding: 6px 0;
+}
+
+.question-text mjx-container,
+.option-label mjx-container,
+.feedback mjx-container {
+    max-width: 100%;
+}
+
+mjx-container[display="true"] {
+    margin: 12px 0 !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+@media (max-width: 600px) {
+    .section {
+        padding: 18px;
+    }
+
+    .option-label {
+        align-items: flex-start;
+        overflow-wrap: anywhere;
+    }
+}
+
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -691,75 +743,161 @@
         }
     }
 
-    function checkCurrentSection() {
-        const activeSection = sections[currentSection];
-        const questions = activeSection.querySelectorAll('.question');
+   
+function checkCurrentSection() {
+    const activeSection = sections[currentSection];
+    const questions = activeSection.querySelectorAll('.question');
 
-        questions.forEach(question => {
-            const feedback = question.querySelector('.feedback');
-            const radios = question.querySelectorAll('input[type="radio"]');
-            const labels = question.querySelectorAll('.option-label');
+    let correctas = 0;
+    let incorrectas = 0;
+    let sinResponder = 0;
+    let abiertas = 0;
 
-            // Limpiar las marcas visuales anteriores.
-            labels.forEach(label => {
-                label.classList.remove('correct-answer');
-                label.style.backgroundColor = '';
-                label.style.borderColor = '';
-            });
+    questions.forEach((question, index) => {
+        const feedback = question.querySelector('.feedback');
+        const radios = question.querySelectorAll('input[type="radio"]');
+        const labels = question.querySelectorAll('.option-label');
 
-            if (!feedback) return;
+        // Limpiar marcas anteriores sin cambiar la respuesta del alumno.
+        labels.forEach(label => {
+            label.classList.remove('correct-answer');
+            label.style.backgroundColor = '';
+            label.style.borderColor = '';
+        });
 
-            // Restaurar el mensaje original antes de revisar.
-            feedback.innerHTML = feedback.dataset.originalContent;
+        if (!feedback) return;
 
-            // Preguntas abiertas: mostrar la rúbrica.
-            if (radios.length === 0) {
-                feedback.classList.add('show');
-                return;
-            }
+        // Guardar el contenido original una sola vez.
+        if (feedback.dataset.originalContent === undefined) {
+            feedback.dataset.originalContent = feedback.innerHTML;
+        }
 
-            // Identificar la respuesta correcta sin seleccionarla.
-            const correctLabel = question.querySelector('[id$="-correct"]');
-            const selectedRadio = question.querySelector(
-                'input[type="radio"]:checked'
-            );
+        const contenidoOriginal = feedback.dataset.originalContent;
 
-            // Después de revisar, se puede mostrar la respuesta correcta.
-            if (correctLabel) {
-                correctLabel.classList.add('correct-answer');
-            }
+        // Las preguntas abiertas requieren revisión manual.
+        if (radios.length === 0) {
+            abiertas++;
+            feedback.innerHTML =
+                '<strong>Revisión manual pendiente.</strong> ' +
+                'Compara tu respuesta con los criterios de esta rúbrica.' +
+                '<hr>' + contenidoOriginal;
+            feedback.classList.add('show');
+            return;
+        }
 
-            if (!selectedRadio) {
-                feedback.innerHTML =
-                    '<strong>No seleccionaste una respuesta.</strong> ' +
-                    'La opción correcta está resaltada en verde.<br><br>' +
-                    feedback.dataset.originalContent;
-                feedback.classList.add('show');
-                return;
-            }
+        const correctLabel = question.querySelector('[id$="-correct"]');
+        const selectedRadio = question.querySelector(
+            'input[type="radio"]:checked'
+        );
 
-            const selectedLabel = selectedRadio.closest('label');
-            const isCorrect = selectedLabel === correctLabel;
+        // Si falta la etiqueta de respuesta correcta, no calificar la pregunta.
+        if (!correctLabel) {
+            feedback.innerHTML =
+                '<strong>No se pudo calificar esta pregunta.</strong> ' +
+                'Falta identificar su respuesta correcta.' +
+                '<hr>' + contenidoOriginal;
+            feedback.classList.add('show');
+            return;
+        }
 
-            if (isCorrect) {
-                selectedLabel.classList.add('correct-answer');
-                feedback.innerHTML =
-                    '<strong>¡Correcto!</strong><br><br>' +
-                    feedback.dataset.originalContent;
-            } else {
+        // Mostrar la respuesta correcta sin seleccionarla automáticamente.
+        correctLabel.classList.add('correct-answer');
+
+        if (!selectedRadio) {
+            sinResponder++;
+            feedback.innerHTML =
+                '<strong>Sin responder.</strong> ' +
+                'La respuesta correcta está marcada en verde.' +
+                '<hr>' + contenidoOriginal;
+            feedback.classList.add('show');
+            return;
+        }
+
+        const selectedLabel = selectedRadio.closest('label');
+        const isCorrect = selectedLabel === correctLabel;
+
+        if (isCorrect) {
+            correctas++;
+            selectedLabel.classList.add('correct-answer');
+
+            feedback.innerHTML =
+                '<strong>¡Correcto!</strong> Tu respuesta es acertada.' +
+                '<hr>' + contenidoOriginal;
+        } else {
+            incorrectas++;
+
+            if (selectedLabel) {
                 selectedLabel.style.backgroundColor = 'var(--danger-light)';
                 selectedLabel.style.borderColor = 'var(--danger)';
-
-                feedback.innerHTML =
-                    '<strong>Respuesta incorrecta.</strong> ' +
-                    'Tu selección está marcada en rojo; la respuesta correcta, ' +
-                    'en verde. Revisa la explicación.<br><br>' +
-                    feedback.dataset.originalContent;
             }
 
-            feedback.classList.add('show');
+            feedback.innerHTML =
+                '<strong>Respuesta incorrecta.</strong> ' +
+                'Tu elección está marcada en rojo y la respuesta correcta ' +
+                'en verde.' +
+                '<hr>' + contenidoOriginal;
+        }
+
+        feedback.classList.add('show');
+    });
+
+    // Calcular la calificación solo con preguntas de opción múltiple
+    // que tengan una respuesta correcta identificada.
+    const preguntasCalificables = correctas + incorrectas;
+    const porcentaje = preguntasCalificables > 0
+        ? Math.round((correctas / preguntasCalificables) * 100)
+        : 0;
+
+    // Crear o actualizar el resumen de resultados de esta página.
+    let resultado = activeSection.querySelector('.section-result');
+
+    if (!resultado) {
+        resultado = document.createElement('div');
+        resultado.className = 'section-result';
+        resultado.style.cssText = [
+            'margin-top:30px',
+            'padding:20px',
+            'border:2px solid var(--primary)',
+            'border-radius:10px',
+            'background:var(--primary-light)'
+        ].join(';');
+
+        activeSection.appendChild(resultado);
+    }
+
+    resultado.innerHTML = `
+        <h3 style="margin-top:0">Resultado de esta página</h3>
+        <p>
+            <strong>Correctas:</strong> ${correctas}
+            &nbsp; | &nbsp;
+            <strong>Incorrectas:</strong> ${incorrectas}
+        </p>
+        <p>
+            <strong>Sin responder:</strong> ${sinResponder}
+            &nbsp; | &nbsp;
+            <strong>Preguntas abiertas por revisar:</strong> ${abiertas}
+        </p>
+        <p>
+            <strong>Calificación de opción múltiple:</strong>
+            ${porcentaje}%
+            (${correctas} de ${preguntasCalificables})
+        </p>
+        <p style="margin-bottom:0">
+            Esta calificación es parcial: las preguntas abiertas requieren
+            revisión manual y no están incluidas en el porcentaje.
+        </p>
+    `;
+
+    // Actualizar la presentación de las fórmulas insertadas dinámicamente.
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([activeSection]).catch(error => {
+            console.warn('No se pudieron actualizar algunas ecuaciones:', error);
         });
     }
+
+    resultado.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 </script>
 
 
