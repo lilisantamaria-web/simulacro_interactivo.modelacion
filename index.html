@@ -640,8 +640,8 @@
 
 </div>
 
+
 <script>
-    // Variables para la paginación
     let currentSection = 0;
     let sections = [];
     let btnPrev, btnNext, progressText;
@@ -651,29 +651,32 @@
         btnPrev = document.getElementById('btn-prev');
         btnNext = document.getElementById('btn-next');
         progressText = document.getElementById('progress-text');
+
+        // Guardar la retroalimentación original de cada pregunta.
+        document.querySelectorAll('.feedback').forEach(fb => {
+            fb.dataset.originalContent = fb.innerHTML;
+        });
+
         updateUI();
     });
 
     function updateUI() {
-        // Mostrar solo la sección actual
         sections.forEach((sec, index) => {
-            if(index === currentSection) {
-                sec.classList.add('active');
-            } else {
-                sec.classList.remove('active');
-            }
+            sec.classList.toggle('active', index === currentSection);
         });
 
-        // Configurar visibilidad de botones
-        btnPrev.style.display = currentSection === 0 ? 'none' : 'block';
-        btnNext.style.display = currentSection === sections.length - 1 ? 'none' : 'block';
-        
-        // Actualizar texto de progreso
-        progressText.innerText = `Problema ${currentSection + 1} de ${sections.length}`;
+        btnPrev.style.display =
+            currentSection === 0 ? 'none' : 'block';
+
+        btnNext.style.display =
+            currentSection === sections.length - 1 ? 'none' : 'block';
+
+        progressText.innerText =
+            `Problema ${currentSection + 1} de ${sections.length}`;
     }
 
     function nextSection() {
-        if(currentSection < sections.length - 1) {
+        if (currentSection < sections.length - 1) {
             currentSection++;
             updateUI();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -681,7 +684,7 @@
     }
 
     function prevSection() {
-        if(currentSection > 0) {
+        if (currentSection > 0) {
             currentSection--;
             updateUI();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -690,22 +693,75 @@
 
     function checkCurrentSection() {
         const activeSection = sections[currentSection];
-        
-        // Resalta las opciones correctas de la sección activa
-        const correctLabels = activeSection.querySelectorAll('[id$="-correct"]');
-        correctLabels.forEach(label => {
-            label.classList.add('correct-answer');
-            const radio = label.querySelector('input');
-            if(radio) radio.checked = true;
-        });
+        const questions = activeSection.querySelectorAll('.question');
 
-        // Muestra las cajas de retroalimentación de la sección activa
-        const feedbacks = activeSection.querySelectorAll('.feedback');
-        feedbacks.forEach(fb => {
-            fb.classList.add('show');
+        questions.forEach(question => {
+            const feedback = question.querySelector('.feedback');
+            const radios = question.querySelectorAll('input[type="radio"]');
+            const labels = question.querySelectorAll('.option-label');
+
+            // Limpiar las marcas visuales anteriores.
+            labels.forEach(label => {
+                label.classList.remove('correct-answer');
+                label.style.backgroundColor = '';
+                label.style.borderColor = '';
+            });
+
+            if (!feedback) return;
+
+            // Restaurar el mensaje original antes de revisar.
+            feedback.innerHTML = feedback.dataset.originalContent;
+
+            // Preguntas abiertas: mostrar la rúbrica.
+            if (radios.length === 0) {
+                feedback.classList.add('show');
+                return;
+            }
+
+            // Identificar la respuesta correcta sin seleccionarla.
+            const correctLabel = question.querySelector('[id$="-correct"]');
+            const selectedRadio = question.querySelector(
+                'input[type="radio"]:checked'
+            );
+
+            // Después de revisar, se puede mostrar la respuesta correcta.
+            if (correctLabel) {
+                correctLabel.classList.add('correct-answer');
+            }
+
+            if (!selectedRadio) {
+                feedback.innerHTML =
+                    '<strong>No seleccionaste una respuesta.</strong> ' +
+                    'La opción correcta está resaltada en verde.<br><br>' +
+                    feedback.dataset.originalContent;
+                feedback.classList.add('show');
+                return;
+            }
+
+            const selectedLabel = selectedRadio.closest('label');
+            const isCorrect = selectedLabel === correctLabel;
+
+            if (isCorrect) {
+                selectedLabel.classList.add('correct-answer');
+                feedback.innerHTML =
+                    '<strong>¡Correcto!</strong><br><br>' +
+                    feedback.dataset.originalContent;
+            } else {
+                selectedLabel.style.backgroundColor = 'var(--danger-light)';
+                selectedLabel.style.borderColor = 'var(--danger)';
+
+                feedback.innerHTML =
+                    '<strong>Respuesta incorrecta.</strong> ' +
+                    'Tu selección está marcada en rojo; la respuesta correcta, ' +
+                    'en verde. Revisa la explicación.<br><br>' +
+                    feedback.dataset.originalContent;
+            }
+
+            feedback.classList.add('show');
         });
     }
 </script>
+
 
 </body>
 </html>
