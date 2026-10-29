@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva Examen Tec Avanza - Matemáticas</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        tec: {
+                            blue: '#002B49',
+                            lightBlue: '#005691',
+                            emerald: '#00B2A9',
+                            coral: '#FF6F61',
+                            darkCard: '#1E293B',
+                            bgDark: '#0F172A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .tab-btn.active {
+            background-color: #005691;
+            color: #FFFFFF;
+            box-shadow: 0 4px 14px 0 rgba(0, 86, 145, 0.4);
+        }
+
+        .option-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .option-card:hover {
+            border-color: #00B2A9;
+            background-color: rgba(30, 41, 59, 0.95);
+        }
+        .option-card.selected {
+            border-color: #00B2A9;
+            background-color: rgba(0, 178, 169, 0.15);
+            box-shadow: 0 0 0 1px #00B2A9;
+        }
+
+        .svg-bar {
+            transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="h-full font-sans antialiased flex flex-col md:flex-row overflow-hidden bg-slate-950 text-slate-100">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="w-full md:w-80 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 z-20">
+        <!-- Logo & Header -->
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-blue-900 flex items-center justify-center font-extrabold text-white shadow-lg shadow-teal-500/20 tracking-wider">
+                    TEC
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight tracking-wide text-white">TEC AVANZA</h1>
+                    <p class="text-xs text-teal-400 font-medium">Guía Matemáticas (40 Reactivos)</p>
+                </div>
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 font-semibold">2026</span>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="p-4 space-y-2 flex-1 overflow-y-auto">
+            <button onclick="switchTab('m1')" id="nav-m1" class="tab-btn active w-full flex items-center justify-between p-3.5 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/60 transition-all group">
+                <div class="flex items-center space-x-3">
+                    <span class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-xs font-bold text-blue-400 group-hover:text-white transition">M1</span>
+                    <span class="truncate">Números Reales & Finanzas</span>
+                </div>
+                <span id="badge-m1" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">0/10</span>
+            </button>
+
+            <button onclick="switchTab('m2')" id="nav-m2" class="tab-btn w-full flex items-center justify-between p-3.5 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/60 transition-all group">
+                <div class="flex items-center space-x-3">
+                    <span class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-xs font-bold text-indigo-400 group-hover:text-white transition">M2</span>
+                    <span class="truncate">Álgebra & Ecuaciones</span>
+                </div>
+                <span id="badge-m2" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">0/10</span>
+            </button>
+
+            <button onclick="switchTab('m3')" id="nav-m3" class="tab-btn w-full flex items-center justify-between p-3.5 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/60 transition-all group">
+                <div class="flex items-center space-x-3">
+                    <span class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-xs font-bold text-teal-400 group-hover:text-white transition">M3</span>
+                    <span class="truncate">Manejo de Datos & SVG</span>
+                </div>
+                <span id="badge-m3" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">0/10</span>
+            </button>
+
+            <button onclick="switchTab('m4')" id="nav-m4" class="tab-btn w-full flex items-center justify-between p-3.5 rounded-xl font-medium text-sm text-slate-300 hover:bg-slate-800/60 transition-all group">
+                <div class="flex items-center space-x-3">
+                    <span class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-xs font-bold text-amber-400 group-hover:text-white transition">M4</span>
+                    <span class="truncate">Combinatoria & Probabilidad</span>
+                </div>
+                <span id="badge-m4" class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400">0/10</span>
+            </button>
+
+            <div class="pt-3 mt-3 border-t border-slate-800">
+                <button onclick="switchTab('m5')" id="nav-m5" class="tab-btn w-full flex items-center justify-between p-3.5 rounded-xl font-semibold text-sm text-teal-300 bg-teal-500/10 hover:bg-teal-500/20 border border-teal-500/20 transition-all">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <span>Dashboard Final</span>
+                    </div>
+                    <span class="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse"></span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Progress Widget Footer -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/80">
+            <div class="flex justify-between text-xs text-slate-400 mb-1.5 font-medium">
+                <span>Progreso Global Examen</span>
+                <span id="global-progress-text">0%</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                <div id="global-progress-bar" class="bg-gradient-to-r from-blue-500 via-teal-400 to-emerald-400 h-full w-0 transition-all duration-500"></div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 flex flex-col h-full overflow-y-auto bg-slate-950 relative">
+        
+        <!-- Header Bar -->
+        <header class="sticky top-0 z-10 glass-card px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+            <div>
+                <h2 id="module-title" class="text-xl font-bold text-white tracking-tight">Módulo 1: Operatoria con Números Reales y Razonamiento Cuantitativo</h2>
+                <p id="module-subtitle" class="text-xs text-slate-400">10 Reactivos con autoevaluación inmediata y retroalimentación matemática detallada.</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span id="status-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700">
+                    Sin Evaluar
+                </span>
+            </div>
+        </header>
+
+        <!-- MODULE CONTAINERS -->
+        <div class="p-6 md:p-8 max-w-5xl mx-auto w-full space-y-8 flex-1">
+
+            <!-- ================= MODULE 1 ================= -->
+            <section id="content-m1" class="module-content space-y-6">
+                <div class="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-xs text-blue-200 leading-relaxed">
+                        <strong>Enfoque M1:</strong> Aritmética de fracciones combinadas, porcentajes directos e inversos, retenciones salariales, impuestos, descuentos sucesivos, mezclas de concentraciones y tasas de interés.
+                    </p>
+                </div>
+
+                <div id="m1-questions-container" class="space-y-6"></div>
+
+                <div class="pt-4 flex justify-end">
+                    <button onclick="evaluateModule('m1')" class="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-lg shadow-blue-600/30 transition flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Evaluar Módulo 1 (10 Reactivos)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= MODULE 2 ================= -->
+            <section id="content-m2" class="module-content hidden space-y-6">
+                <div class="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-xs text-indigo-200 leading-relaxed">
+                        <strong>Enfoque M2:</strong> Factorización avanzada, solución de ecuaciones lineales fraccionarias, despejes en fórmulas físicas/geométricas, sistemas 2x2, fórmula cuadrática y análisis del discriminante.
+                    </p>
+                </div>
+
+                <div id="m2-questions-container" class="space-y-6"></div>
+
+                <div class="pt-4 flex justify-end">
+                    <button onclick="evaluateModule('m2')" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Evaluar Módulo 2 (10 Reactivos)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= MODULE 3 ================= -->
+            <section id="content-m3" class="module-content hidden space-y-6">
+                <div class="p-4 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-teal-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-xs text-teal-200 leading-relaxed">
+                        <strong>Enfoque M3:</strong> Análisis e interpretación de datos mediante gráficos vectoriales SVG (histogramas, diagramas de barras, sectores circulares y gráficas de distancia-tiempo), MTC y tablas de contingencia.
+                    </p>
+                </div>
+
+                <!-- SVG CHARTS DISPLAY BOARD -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-4">
+                    <!-- SVG Chart 1: Bar chart -->
+                    <div class="glass-card p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold text-teal-400">
+                            <span>Gráfico SVG A: Examen Química</span>
+                            <span class="text-slate-400">N = 31 alumnos</span>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl flex justify-center">
+                            <svg viewBox="0 0 350 180" class="w-full h-40">
+                                <line x1="35" y1="140" x2="330" y2="140" stroke="#64748B" stroke-width="2" />
+                                <line x1="35" y1="20" x2="35" y2="140" stroke="#64748B" stroke-width="2" />
+                                <!-- Bars: 60:3, 70:5, 75:6, 80:8, 90:4, 95:3, 100:2 -->
+                                <!-- scale: h = f * 12 -->
+                                <rect x="45" y="104" width="28" height="36" rx="3" fill="#3B82F6" />
+                                <text x="59" y="98" fill="#93C5FD" font-size="10" font-weight="bold" text-anchor="middle">3</text>
+                                <text x="59" y="154" fill="#94A3B8" font-size="8" text-anchor="middle">60</text>
+
+                                <rect x="85" y="80" width="28" height="60" rx="3" fill="#3B82F6" />
+                                <text x="99" y="74" fill="#93C5FD" font-size="10" font-weight="bold" text-anchor="middle">5</text>
+                                <text x="99" y="154" fill="#94A3B8" font-size="8" text-anchor="middle">70</text>
+
+                                <rect x="125" y="68" width="28" height="72" rx="3" fill="#3B82F6" />
+                                <text x="139" y="62" fill="#93C5FD" font-size="10" font-weight="bold" text-anchor="middle">6</text>
+                                <text x="139" y="154" fill="#94A3B8" font-size="8" text-anchor="middle">75</text>
+
+                                <rect x="165" y="44" width="28" height="96" rx="3" fill="#00B2A9" />
+                                <text x="179" y="38" fill="#5EEAD4" font-size="10" font-weight="bold" text-anchor="middle">8</text>
+                                <text x="179" y="154" fill="#5EEAD4" font-size="8" font-weight="bold" text-anchor="middle">80</text>
+
+                                <rect x="205" y="92" width="28" height="48" rx="3" fill="#6366F1" />
+                                <text x="219" y="86" fill="#A5B4FC" font-size="10" font-weight="bold" text-anchor="middle">4</text>
+                                <text x="219" y="154" fill="#94A3B8" font-size="8" text-anchor="middle">90</text>
+
+                                <rect x="245" y="104" width="28" height="36" rx="3" fill="#6366F1" />
+                                <text x="259" y="98" fill="#A5B4FC" font-size="10" font-weight="bold" text-anchor="middle">3</text>
+                                <text x="259" y="154" fill="#94A3B8" font-size="8" text-anchor="middle">95</text>
+
+                                <rect x="285" y="116" width="28" height="24" rx="3" fill="#8B5CF6" />
+                                <text x="299" y="110" fill="#C4B5FD" font-size="10" font-weight="bold" text-anchor="middle">2</text>
+                                <text x="299" y="154" fill="#94A3B8" font-size="8" text-anchor="middle">100</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- SVG Chart 2: Cumulative call line -->
+                    <div class="glass-card p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold text-teal-400">
+                            <span>Gráfico SVG B: Espera en Llamadas Banco</span>
+                            <span class="text-slate-400">N = 40 llamadas</span>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl flex justify-center">
+                            <svg viewBox="0 0 350 180" class="w-full h-40">
+                                <line x1="35" y1="150" x2="330" y2="150" stroke="#64748B" stroke-width="2" />
+                                <line x1="35" y1="20" x2="35" y2="150" stroke="#64748B" stroke-width="2" />
+                                <!-- Points: (3min,1), (6min,2), (9min,5), (12min,20), (15min,37), (18min,40) -->
+                                <!-- mapping x: 35 + (min/18)*285. y: 150 - (val/40)*125 -->
+                                <polyline points="35,150 82,147 130,144 177,134 225,87 272,34 320,25" fill="none" stroke="#00B2A9" stroke-width="3" />
+                                <circle cx="177" cy="134" r="4" fill="#FF6F61" />
+                                <text x="177" y="124" fill="#FF6F61" font-size="9" text-anchor="middle">5</text>
+
+                                <circle cx="272" cy="34" r="4" fill="#FF6F61" />
+                                <text x="272" y="24" fill="#FF6F61" font-size="9" text-anchor="middle">37</text>
+
+                                <text x="82" y="165" fill="#94A3B8" font-size="8" text-anchor="middle">3 min</text>
+                                <text x="177" y="165" fill="#94A3B8" font-size="8" text-anchor="middle">9 min</text>
+                                <text x="272" y="165" fill="#94A3B8" font-size="8" text-anchor="middle">15 min</text>
+                                <text x="320" y="165" fill="#94A3B8" font-size="8" text-anchor="middle">18 min</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- SVG Chart 3: Pie Chart TELUSA -->
+                    <div class="glass-card p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold text-teal-400">
+                            <span>Gráfico SVG C: Salarios TELUSA</span>
+                            <span class="text-slate-400">Muestra = 19 emp.</span>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl flex items-center justify-around h-40">
+                            <svg viewBox="0 0 160 160" class="w-32 h-32">
+                                <path d="M 80 80 L 80 10 A 70 70 0 0 1 148.6 94.2 Z" fill="#3B82F6" />
+                                <path d="M 80 80 L 148.6 94.2 A 70 70 0 0 1 123.4 134.8 Z" fill="#00B2A9" />
+                                <path d="M 80 80 L 123.4 134.8 A 70 70 0 0 1 93.8 148.6 Z" fill="#F59E0B" />
+                                <path d="M 80 80 L 93.8 148.6 A 70 70 0 0 1 18.2 112.5 Z" fill="#6366F1" />
+                                <path d="M 80 80 L 18.2 112.5 A 70 70 0 0 1 31.4 29.8 Z" fill="#EC4899" />
+                                <path d="M 80 80 L 31.4 29.8 A 70 70 0 0 1 80 10 Z" fill="#8B5CF6" />
+                                <circle cx="80" cy="80" r="30" fill="#0F172A" />
+                            </svg>
+                            <div class="text-[10px] space-y-1 text-slate-300">
+                                <div><span class="inline-block w-2.5 h-2.5 rounded bg-blue-500 mr-1"></span>$25k (7 emp)</div>
+                                <div><span class="inline-block w-2.5 h-2.5 rounded bg-teal-500 mr-1"></span>$30k (2 emp)</div>
+                                <div><span class="inline-block w-2.5 h-2.5 rounded bg-amber-500 mr-1"></span>$35k (1 emp)</div>
+                                <div><span class="inline-block w-2.5 h-2.5 rounded bg-indigo-500 mr-1"></span>$40k (5 emp)</div>
+                                <div><span class="inline-block w-2.5 h-2.5 rounded bg-pink-500 mr-1"></span>$90k (3 emp)</div>
+                                <div><span class="inline-block w-2.5 h-2.5 rounded bg-purple-500 mr-1"></span>$100k (1 emp)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SVG Chart 4: Distance vs Time Journey -->
+                    <div class="glass-card p-4 rounded-2xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between items-center text-xs font-bold text-teal-400">
+                            <span>Gráfico SVG D: Recorrido en Bici</span>
+                            <span class="text-slate-400">Distancia vs Tiempo</span>
+                        </div>
+                        <div class="bg-slate-900/90 p-3 rounded-xl flex justify-center">
+                            <svg viewBox="0 0 350 180" class="w-full h-40">
+                                <line x1="35" y1="150" x2="330" y2="150" stroke="#64748B" stroke-width="2" />
+                                <line x1="35" y1="20" x2="35" y2="150" stroke="#64748B" stroke-width="2" />
+                                <!-- (0,0)->(120m,45km)->(180m,45km)->(300m,90km)->(360m,0km) -->
+                                <polyline points="35,150 133,85 182,85 280,20 329,150" fill="none" stroke="#FF6F61" stroke-width="3" />
+                                <circle cx="133" cy="85" r="4" fill="#00B2A9" />
+                                <text x="133" y="75" fill="#00B2A9" font-size="9" text-anchor="middle">45 km</text>
+
+                                <circle cx="280" cy="20" r="4" fill="#00B2A9" />
+                                <text x="280" y="15" fill="#00B2A9" font-size="9" text-anchor="middle">90 km</text>
+
+                                <text x="133" y="165" fill="#94A3B8" font-size="8" text-anchor="middle">120 min</text>
+                                <text x="182" y="165" fill="#94A3B8" font-size="8" text-anchor="middle">180 min</text>
+                                <text x="280" y="165" fill="#94A3B8" font-size="8" text-anchor="middle">300 min</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="m3-questions-container" class="space-y-6"></div>
+
+                <div class="pt-4 flex justify-end">
+                    <button onclick="evaluateModule('m3')" class="px-6 py-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-sm shadow-lg shadow-teal-600/30 transition flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Evaluar Módulo 3 (10 Reactivos)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= MODULE 4 ================= -->
+            <section id="content-m4" class="module-content hidden space-y-6">
+                <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-xs text-amber-200 leading-relaxed">
+                        <strong>Enfoque M4:</strong> Combinaciones C(n,k), permutaciones simples, principio multiplicativo, probabilidad clásica, complementos, probabilidad condicional y muestreo promocional.
+                    </p>
+                </div>
+
+                <div id="m4-questions-container" class="space-y-6"></div>
+
+                <div class="pt-4 flex justify-end">
+                    <button onclick="evaluateModule('m4')" class="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-sm shadow-lg shadow-amber-600/30 transition flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Evaluar Módulo 4 (10 Reactivos)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= MODULE 5 (FINAL DASHBOARD) ================= -->
+            <section id="content-m5" class="module-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- Global Gauge -->
+                    <div class="glass-card p-6 rounded-2xl border border-slate-800 flex flex-col items-center justify-center text-center space-y-3">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Desempeño Total Examen</span>
+                        <div class="relative flex items-center justify-center">
+                            <svg class="w-36 h-36 transform -rotate-90">
+                                <circle cx="72" cy="72" r="60" stroke="#1E293B" stroke-width="12" fill="transparent" />
+                                <circle id="score-circle" cx="72" cy="72" r="60" stroke="#00B2A9" stroke-width="12" stroke-dasharray="377" stroke-dashoffset="377" stroke-linecap="round" fill="transparent" class="transition-all duration-1000 ease-out" />
+                            </svg>
+                            <span id="dash-percentage" class="absolute text-3xl font-extrabold text-white">0%</span>
+                        </div>
+                        <p id="dash-score-sub" class="text-xs text-slate-400">0 de 40 aciertos totales</p>
+                    </div>
+
+                    <!-- Module Status Breakdown -->
+                    <div class="glass-card p-6 rounded-2xl border border-slate-800 md:col-span-2 flex flex-col justify-between space-y-4">
+                        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Resumen por Área de Conocimiento</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-blue-400 font-medium">M1: Operatoria con Números Reales</span>
+                                    <span id="m1-bar-text" class="text-slate-400">Sin evaluar</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div id="m1-bar-fill" class="bg-blue-500 h-full w-0 transition-all duration-500"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-indigo-400 font-medium">M2: Álgebra & Ecuaciones</span>
+                                    <span id="m2-bar-text" class="text-slate-400">Sin evaluar</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div id="m2-bar-fill" class="bg-indigo-500 h-full w-0 transition-all duration-500"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-teal-400 font-medium">M3: Manejo de Datos & SVG</span>
+                                    <span id="m3-bar-text" class="text-slate-400">Sin evaluar</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div id="m3-bar-fill" class="bg-teal-500 h-full w-0 transition-all duration-500"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-amber-400 font-medium">M4: Combinatoria & Probabilidad</span>
+                                    <span id="m4-bar-text" class="text-slate-400">Sin evaluar</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div id="m4-bar-fill" class="bg-amber-500 h-full w-0 transition-all duration-500"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Recommendations -->
+                <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        <span>Diagnóstico Pedagógico y Plan de Repaso Tec Avanza</span>
+                    </h3>
+                    <div id="recommendations-box" class="text-xs text-slate-300 leading-relaxed space-y-2">
+                        <p class="italic text-slate-400">Evalúa los módulos individuales para generar tu análisis de fortalezas y áreas a reforzar.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- SCRIPT LOGIC AND COMPLETE QUESTION DATABASE -->
+    <script>
+        // QUESTION DATABASE (40 QUESTIONS, 10 PER MODULE)
+        const questionsData = {
+            m1: [
+                { id: 'm1_q1', type: 'mcq', title: 'Fracciones combinadas con jerarquía', desc: 'Resuelve la operación: <strong>2/3 - 3/4 + (1/2)²</strong>', options: ['A) 1/6', 'B) 1/12', 'C) 5/12', 'D) 1/3'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>1) (1/2)² = 1/4.<br>2) 2/3 - 3/4 + 1/4 = 2/3 - 2/4 = 2/3 - 1/2.<br>3) Convertir a denominador común 6: 4/6 - 3/6 = <strong>1/6</strong>.' },
+                { id: 'm1_q2', type: 'num', title: 'División de expresiones fraccionarias', desc: 'Resuelve exactamente: <strong>(2/3 - 1/6) ÷ (3/2 - 1)</strong>', correct: 1, exp: '<strong>Paso a paso:</strong><br>1) Numerador: 2/3 - 1/6 = 4/6 - 1/6 = 3/6 = 1/2.<br>2) Denominador: 3/2 - 1 = 1/2.<br>3) División: (1/2) ÷ (1/2) = <strong>1</strong>.' },
+                { id: 'm1_q3', type: 'mcq', title: 'Cálculo de Porcentaje Directo', desc: 'Calcula el <strong>15% de 90</strong>.', options: ['A) 12.5', 'B) 13.5', 'C) 14.0', 'D) 15.0'], correct: 'B', exp: '<strong>Paso a paso:</strong><br>90 × 0.15 = <strong>13.5</strong>.' },
+                { id: 'm1_q4', type: 'num', title: 'Porcentaje Inverso', desc: 'Si <strong>25 es el 30%</strong> de un número N, ¿cuál es el valor total de N? (Ingresa como decimal a 2 decimales, ej. 83.33).', correct: 83.33, exp: '<strong>Paso a paso:</strong><br>0.30 × N = 25 ⇒ N = 25 / 0.30 = <strong>83.33</strong>.' },
+                { id: 'm1_q5', type: 'mcq', title: 'Sueldo Neto con Retenciones Múltiples', desc: 'El sueldo mensual bruto de un graduado es <strong>$12,300 MXN</strong>. Le retienen ISR (5.3%), IMSS (2.5%) y Caja de ahorro (2%). ¿Qué sueldo neto recibe?', options: ['A) $11,094.60 MXN', 'B) $11,200.00 MXN', 'C) $10,950.40 MXN', 'D) $11,500.00 MXN'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>1) Total retenciones = 5.3% + 2.5% + 2% = 9.8%.<br>2) Monto retenido = 12,300 × 0.098 = $1,205.40.<br>3) Sueldo neto = 12,300 - 1,205.40 = <strong>$11,094.60 MXN</strong>.' },
+                { id: 'm1_q6', type: 'num', title: 'Descuentos Sucesivos Comerciales', desc: 'Una camisa cuesta <strong>$1,400 MXN</strong>. Tiene 40% de descuento directo y 30% adicional sobre lo ya rebajado. ¿Cuál es su precio final?', correct: 588, exp: '<strong>Paso a paso:</strong><br>1) Tras primer desc: 1,400 × 0.60 = $840.<br>2) Tras desc adicional: 840 × 0.70 = <strong>$588 MXN</strong>.' },
+                { id: 'm1_q7', type: 'mcq', title: 'Desglose de IVA (16%)', desc: 'Un libro se publica a precio final de <strong>$350 MXN</strong> con el 16% de IVA ya incluido. ¿Cuál es el precio del libro sin IVA?', options: ['A) $294.00 MXN', 'B) $301.72 MXN', 'C) $310.50 MXN', 'D) $298.30 MXN'], correct: 'B', exp: '<strong>Paso a paso:</strong><br>Precio Sin IVA = 350 / 1.16 = <strong>$301.72 MXN</strong>.' },
+                { id: 'm1_q8', type: 'num', title: 'Mezcla de Concentraciones Químicas', desc: 'Se combinan <strong>20% de 300 ml</strong> de un reactivo con el <strong>30% de 400 ml</strong> del mismo reactivo. ¿Cuántos ml de sustancia pura hay en total?', correct: 180, exp: '<strong>Paso a paso:</strong><br>1) Frasco 1: 300 × 0.20 = 60 ml.<br>2) Frasco 2: 400 × 0.30 = 120 ml.<br>3) Total puro = 60 + 120 = <strong>180 ml</strong>.' },
+                { id: 'm1_q9', type: 'mcq', title: 'Interés Compuesto Semanal', desc: 'Una inversión de <strong>$1,000 MXN</strong> genera 8% mensual capitalizable semanalmente (4 semanas a razón del 2% semanal). ¿Cuánto dinero hay al final de la semana 4?', options: ['A) $1,080.00 MXN', 'B) $1,082.43 MXN', 'C) $1,085.20 MXN', 'D) $1,092.00 MXN'], correct: 'B', exp: '<strong>Paso a paso:</strong><br>Fórmula: 1000 × (1 + 0.02)⁴ = 1000 × 1.082432 = <strong>$1,082.43 MXN</strong>.' },
+                { id: 'm1_q10', type: 'num', title: 'Variación Porcentual Salarial', desc: 'El sueldo de un profesor aumenta de <strong>$32,500 MXN</strong> a <strong>$36,400 MXN</strong>. ¿Qué porcentaje exacto representó el incremento?', correct: 12, exp: '<strong>Paso a paso:</strong><br>1) Incremento = 36,400 - 32,500 = 3,900.<br>2) Porcentaje = (3,900 / 32,500) × 100 = <strong>12%</strong>.' }
+            ],
+            m2: [
+                { id: 'm2_q1', type: 'mcq', title: 'Factorización por Término Común', desc: 'Factoriza por completo la expresión: <strong>6x³y - 9x²y² + 12xy</strong>', options: ['A) 3xy(2x² - 3xy + 4)', 'B) 3x²y(2x - 3y + 4)', 'C) 6xy(x² - 2xy + 2)', 'D) 3xy(2x² + 3xy - 4)'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>El MCD numérico es 3 y el término común literal es xy. Factorizado: <strong>3xy(2x² - 3xy + 4)</strong>.' },
+                { id: 'm2_q2', type: 'num', title: 'Factorización x² + bx + c', desc: 'Si x² - 7x + 12 = (x - a)(x - b), determina la suma de los valores de <strong>a + b</strong>.', correct: 7, exp: '<strong>Paso a paso:</strong><br>1) Dos números que multiplicados den 12 y sumados den -7 son -3 y -4.<br>2) x² - 7x + 12 = (x - 3)(x - 4) ⇒ a=3, b=4.<br>3) a + b = 3 + 4 = <strong>7</strong>.' },
+                { id: 'm2_q3', type: 'mcq', title: 'Factorización ax² + bx + c', desc: 'Factoriza por completo el trinomio: <strong>6x² - 7x - 3</strong>', options: ['A) (3x + 1)(2x - 3)', 'B) (6x - 1)(x + 3)', 'C) (2x + 1)(3x - 3)', 'D) (3x - 1)(2x + 3)'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>Verificación por multiplicación: (3x + 1)(2x - 3) = 6x² - 9x + 2x - 3 = <strong>6x² - 7x - 3</strong>.' },
+                { id: 'm2_q4', type: 'num', title: 'Diferencia de Cuadrados Numérica', desc: 'Evalúa el valor numérico de la diferencia de cuadrados <strong>16x² - 81y²</strong> para x = 5 e y = 2.', correct: 76, exp: '<strong>Paso a paso:</strong><br>16(5)² - 81(2)² = 16(25) - 81(4) = 400 - 324 = <strong>76</strong>.' },
+                { id: 'm2_q5', type: 'mcq', title: 'Despeje en Fórmula Geométrica Abstracta', desc: 'En V = a²·h, despeja "a" y calcula su valor si V = 490 cm³ y h = 10 cm.', options: ['A) a = 7 cm', 'B) a = 14 cm', 'C) a = 49 cm', 'D) a = 3.5 cm'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>a² = V / h = 490 / 10 = 49 ⇒ a = √49 = <strong>7 cm</strong>.' },
+                { id: 'm2_q6', type: 'num', title: 'Ecuaciones Lineales Fraccionarias', desc: 'Resuelve para x en la ecuación: <strong>(2x - 1)/3 - (x + 2)/4 = 1</strong>', correct: 4.4, exp: '<strong>Paso a paso:</strong><br>1) Multiplicar por MCD 12: 4(2x - 1) - 3(x + 2) = 12.<br>2) 8x - 4 - 3x - 6 = 12 ⇒ 5x - 10 = 12 ⇒ 5x = 22 ⇒ x = <strong>4.4</strong>.' },
+                { id: 'm2_q7', type: 'mcq', title: 'Sistemas de Ecuaciones 2x2', desc: 'Resuelve el sistema {3x + 2y = 12 ; 5x - 3y = 1} e indica el valor del producto <strong>x · y</strong>.', options: ['A) 6', 'B) 5', 'C) 12', 'D) 8'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>1) Multiplicar Ec1 por 3 y Ec2 por 2: 9x + 6y = 36; 10x - 6y = 2.<br>2) Suma: 19x = 38 ⇒ x = 2. Sustituyendo: 3(2) + 2y = 12 ⇒ y = 3.<br>3) Producto x · y = 2 × 3 = <strong>6</strong>.' },
+                { id: 'm2_q8', type: 'num', title: 'Ecuación Cuadrática por Fórmula General', desc: 'Dada la ecuación 2x² - 5x - 3 = 0, halla la <strong>solución positiva</strong> para x.', correct: 3, exp: '<strong>Paso a paso:</strong><br>Factorizando: (2x + 1)(x - 3) = 0 ⇒ x = -0.5 ó x = 3. Solución positiva: <strong>3</strong>.' },
+                { id: 'm2_q9', type: 'mcq', title: 'Análisis del Discriminante Cuadrático', desc: 'Calcula el discriminante Δ de 3x² - 4x + 2 = 0 e indica qué tipo de raíces presenta.', options: ['A) Δ = -8; dos raíces complejas conjugadas', 'B) Δ = 8; dos raíces reales distintas', 'C) Δ = 0; una raíz real doble', 'D) Δ = -4; sin solución en complejos'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>Δ = b² - 4ac = (-4)² - 4(3)(2) = 16 - 24 = <strong>-8</strong>. Al ser negativo, existen dos raíces complejas conjugadas.' },
+                { id: 'm2_q10', type: 'num', title: 'Valor Numérico de Polinomios', desc: 'Calcula el valor numérico de P(a,b,c) = 2a³ - 3ab² + 5c² para a = -2, b = 3, c = -1.', correct: 43, exp: '<strong>Paso a paso:</strong><br>P = 2(-2)³ - 3(-2)(3)² + 5(-1)² = 2(-8) - 3(-2)(9) + 5(1) = -16 + 54 + 5 = <strong>43</strong>.' }
+            ],
+            m3: [
+                { id: 'm3_q1', type: 'mcq', title: 'Media Aritmética de Temperaturas', desc: 'Calcula la temperatura promedio diaria de la semana en Monterrey: 35°, 36°, 38°, 40°, 34°, 35°, 37°C.', options: ['A) 36.43°C', 'B) 35.50°C', 'C) 37.00°C', 'D) 36.00°C'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>1) Suma = 35 + 36 + 38 + 40 + 34 + 35 + 37 = 255.<br>2) Media = 255 / 7 = <strong>36.43°C</strong>.' },
+                { id: 'm3_q2', type: 'num', title: 'Mediana de Datos no Agrupados', desc: 'Calcula la mediana exacta para la muestra ordenada: 12, 15, 18, 18, 20, 22, 25.', correct: 18, exp: '<strong>Paso a paso:</strong><br>Para N = 7 datos, la mediana es el dato en la posición 4: <strong>18</strong>.' },
+                { id: 'm3_q3', type: 'mcq', title: 'Moda en Gráfico SVG A', desc: 'Consulta el <strong>Gráfico SVG A (Examen Química)</strong>. ¿Cuál es la calificación moda del grupo?', options: ['A) 80 pts', 'B) 75 pts', 'C) 90 pts', 'D) 70 pts'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>La calificación de <strong>80 pts</strong> tiene la mayor barra con frecuencia de 8 alumnos.' },
+                { id: 'm3_q4', type: 'num', title: 'Interpretación de Histograma Acumulado SVG B', desc: 'Con el <strong>Gráfico SVG B (Espera Banco)</strong>, calcula cuántas llamadas esperaron en el rango de <strong>9 a 15 minutos</strong> (sabiendo que acumuladas a 15 min hay 37 y a 9 min hay 5).', correct: 32, exp: '<strong>Paso a paso:</strong><br>Llamadas = Acumulado(15 min) - Acumulado(9 min) = 37 - 5 = <strong>32 llamadas</strong>.' },
+                { id: 'm3_q5', type: 'mcq', title: 'Análisis de Diagrama Circular SVG C', desc: 'Consulta el <strong>Gráfico SVG C (Salarios TELUSA)</strong> para N = 19 empleados. ¿Qué porcentaje exacto gana $25,000 MXN (7 empleados)?', options: ['A) 36.8%', 'B) 26.3%', 'C) 35.0%', 'D) 41.2%'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>Porcentaje = (7 / 19) × 100 = <strong>36.8%</strong>.' },
+                { id: 'm3_q6', type: 'num', title: 'Frecuencia Relativa Porcentual', desc: 'En una muestra de 80 personas en Frikiplaza, 24 tienen entre 20 y 24 años. ¿Qué porcentaje del total representan?', correct: 30, exp: '<strong>Paso a paso:</strong><br>Porcentaje = (24 / 80) × 100 = <strong>30%</strong>.' },
+                { id: 'm3_q7', type: 'mcq', title: 'Lectura de Gráfica Distancia-Tiempo SVG D', desc: 'Consulta el <strong>Gráfico SVG D (Recorrido Bici)</strong>. ¿A qué velocidad promedio en km/h se avanzó en el primer tramo (0 a 120 min, 45 km)?', options: ['A) 22.5 km/h', 'B) 30.0 km/h', 'C) 45.0 km/h', 'D) 15.0 km/h'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>Distancia = 45 km; Tiempo = 120 min = 2 horas. V = 45 / 2 = <strong>22.5 km/h</strong>.' },
+                { id: 'm3_q8', type: 'num', title: 'Tabla de Contingencia Profesión/Género', desc: 'De un total de 57 mujeres encuestadas, 25 están en Ingeniería. ¿Qué porcentaje del género femenino estudia Ingeniería? (A 1 decimal).', correct: 43.9, exp: '<strong>Paso a paso:</strong><br>Porcentaje = (25 / 57) × 100 = <strong>43.9%</strong>.' },
+                { id: 'm3_q9', type: 'mcq', title: 'Rango e Incertidumbre de Mediciones', desc: 'Una mesa mide 2.45m × 1.37m con error de ±0.02m en cada lado. ¿Cuál es el rango de valores posibles para el área [A_mín, A_máx]?', options: ['A) [3.2805, 3.4333] m²', 'B) [3.1500, 3.5000] m²', 'C) [3.3365, 3.3765] m²', 'D) [3.2000, 3.4000] m²'], optionsVal: ['A', 'B', 'C', 'D'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>A_mín = (2.43) × (1.35) = 3.2805 m².<br>A_máx = (2.47) × (1.39) = 3.4333 m².<br>Rango: <strong>[3.2805, 3.4333] m²</strong>.' },
+                { id: 'm3_q10', type: 'num', title: 'Predicción Lineal e Inventario con Margen de Error', desc: 'Si la proyección de ventas para Junio es de 1,400 unidades y se añade un 5% de margen de incertidumbre para compra de inventario máximo, ¿cuántas unidades se deben adquirir?', correct: 1470, exp: '<strong>Paso a paso:</strong><br>Inventario = 1,400 × 1.05 = <strong>1,470 unidades</strong>.' }
+            ],
+            m4: [
+                { id: 'm4_q1', type: 'mcq', title: 'Combinaciones Básicas C(n,k)', desc: '¿De cuántas formas se pueden seleccionar 3 estudiantes de un grupo de 10 para una comisión sin cargos diferidos C(10,3)?', options: ['A) 120', 'B) 720', 'C) 240', 'D) 360'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>C(10,3) = (10 × 9 × 8) / (3 × 2 × 1) = 720 / 6 = <strong>120 formas</strong>.' },
+                { id: 'm4_q2', type: 'num', title: 'Combinaciones en Menú C(8,2)', desc: 'Calcula el número de formas de elegir 2 ingredientes para una pizza entre 8 opciones disponibles.', correct: 28, exp: '<strong>Paso a paso:</strong><br>C(8,2) = (8 × 7) / 2 = <strong>28 formas</strong>.' },
+                { id: 'm4_q3', type: 'mcq', title: 'Permutaciones Simples', desc: '¿De cuántas maneras distintas se pueden ordenar 5 libros diferentes en un estante lineal (5!)?', options: ['A) 120', 'B) 25', 'C) 60', 'D) 720'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>5! = 5 × 4 × 3 × 2 × 1 = <strong>120 maneras</strong>.' },
+                { id: 'm4_q4', type: 'num', title: 'Principio Fundamental del Conteo', desc: 'Un estudiante combina 4 camisas, 3 pantalones y 2 pares de zapatos. ¿Cuántas vestimentas distintas puede formar?', correct: 24, exp: '<strong>Paso a paso:</strong><br>Total = 4 × 3 × 2 = <strong>24 vestimentas</strong>.' },
+                { id: 'm4_q5', type: 'mcq', title: 'Probabilidad Evento Simple', desc: 'En una urna hay 4 bolas rojas, 5 azules y 3 verdes (Total 12). ¿Cuál es la probabilidad de NO extraer una bola azul?', options: ['A) 7/12', 'B) 5/12', 'C) 1/3', 'D) 1/2'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>Bolas no azules = 4 + 3 = 7. P(no azul) = <strong>7/12</strong>.' },
+                { id: 'm4_q6', type: 'num', title: 'Probabilidad del Complemento', desc: 'Si la probabilidad de que llueva es P(A) = 0.35, calcula la probabilidad del evento complemento P(A\').', correct: 0.65, exp: '<strong>Paso a paso:</strong><br>P(A\') = 1 - 0.35 = <strong>0.65</strong>.' },
+                { id: 'm4_q7', type: 'mcq', title: 'Probabilidad Condicional P(A|B)', desc: 'Dados P(A) = 0.4, P(B) = 0.5 y P(A∩B) = 0.2, calcula la probabilidad condicional P(A|B).', options: ['A) 0.4', 'B) 0.8', 'C) 0.2', 'D) 0.5'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>P(A|B) = P(A∩B) / P(B) = 0.2 / 0.5 = <strong>0.4</strong>.' },
+                { id: 'm4_q8', type: 'num', title: 'Conteo de Frecuencia con Condición', desc: 'En un grupo de 31 alumnos, 4 sacaron 90, 3 sacaron 95 y 2 sacaron 100. ¿Cuántos alumnos obtuvieron calificación mayor o igual a 90?', correct: 9, exp: '<strong>Paso a paso:</strong><br>Alumnos ≥ 90 = 4 + 3 + 2 = <strong>9 alumnos</strong>.' },
+                { id: 'm4_q9', type: 'mcq', title: 'Muestreo y Demanda Promocional', desc: 'En una prepa de 450 mujeres, el 30% compra ropa promocional. ¿Cuántas playeras para dama se deben ordenar?', options: ['A) 135', 'B) 150', 'C) 120', 'D) 180'], correct: 'A', exp: '<strong>Paso a paso:</strong><br>Demanda = 450 × 0.30 = <strong>135 playeras</strong>.' },
+                { id: 'm4_q10', type: 'num', title: 'Probabilidad de Eventos Independientes', desc: 'Calcula la probabilidad de obtener dos "6" seguidos al lanzar un dado justo dos veces. (Ingresa como decimal a 4 decimales, ej. 0.0278).', correct: 0.0278, exp: '<strong>Paso a paso:</strong><br>P = (1/6) × (1/6) = 1/36 = <strong>0.0278</strong>.' }
+            ]
+        };
+
+        // QUIZ STATE
+        const quizState = {
+            m1: { evaluated: false, answers: {} },
+            m2: { evaluated: false, answers: {} },
+            m3: { evaluated: false, answers: {} },
+            m4: { evaluated: false, answers: {} }
+        };
+
+        // INITIALIZE DYNAMIC QUESTION UI
+        function initQuestions() {
+            ['m1', 'm2', 'm3', 'm4'].forEach(modId => {
+                const container = document.getElementById(`${modId}-questions-container`);
+                if (!container) return;
+
+                const questions = questionsData[modId];
+                container.innerHTML = questions.map((q, idx) => {
+                    if (q.type === 'mcq') {
+                        return `
+                        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                            <div class="flex justify-between items-start">
+                                <span class="text-xs font-bold text-teal-400 tracking-wider uppercase">Reactivo ${idx + 1} de 10 • Opción Múltiple</span>
+                                <span class="text-xs text-slate-400 font-medium">${q.title}</span>
+                            </div>
+                            <p class="text-slate-200 text-sm leading-relaxed">${q.desc}</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                                ${q.options.map((opt, oIdx) => {
+                                    const letter = String.fromCharCode(65 + oIdx);
+                                    return `
+                                    <button onclick="selectOption('${q.id}', '${letter}')" id="opt-${q.id}-${letter}" class="option-card p-3.5 rounded-xl border border-slate-800 bg-slate-900/60 text-left text-xs md:text-sm font-medium flex items-center justify-between">
+                                        <span>${opt}</span>
+                                        <span class="w-4 h-4 rounded-full border border-slate-600 flex items-center justify-center text-[10px]"></span>
+                                    </button>
+                                    `;
+                                }).join('')}
+                            </div>
+                            <div id="feedback-${q.id}" class="hidden p-4 rounded-xl text-xs space-y-2 mt-4"></div>
+                        </div>
+                        `;
+                    } else {
+                        return `
+                        <div class="glass-card p-6 rounded-2xl border border-slate-800 space-y-4">
+                            <div class="flex justify-between items-start">
+                                <span class="text-xs font-bold text-teal-400 tracking-wider uppercase">Reactivo ${idx + 1} de 10 • Respuesta Numérica</span>
+                                <span class="text-xs text-slate-400 font-medium">${q.title}</span>
+                            </div>
+                            <p class="text-slate-200 text-sm leading-relaxed">${q.desc}</p>
+                            <div class="pt-2">
+                                <input type="number" step="any" id="input-${q.id}" placeholder="Ingresa tu respuesta numérica" class="w-full md:w-72 px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400">
+                            </div>
+                            <div id="feedback-${q.id}" class="hidden p-4 rounded-xl text-xs space-y-2 mt-4"></div>
+                        </div>
+                        `;
+                    }
+                }).join('');
+            });
+        }
+
+        // TAB NAVIGATION
+        function switchTab(modId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`nav-${modId}`).classList.add('active');
+
+            document.querySelectorAll('.module-content').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(`content-${modId}`).classList.remove('hidden');
+
+            const titles = {
+                m1: 'Módulo 1: Operatoria con Números Reales y Razonamiento Cuantitativo',
+                m2: 'Módulo 2: Álgebra Fundamental y Manejo de Ecuaciones',
+                m3: 'Módulo 3: Organización, Manejo e Interpretación de Datos',
+                m4: 'Módulo 4: Combinatoria y Probabilidad Clásica',
+                m5: 'Módulo 5: Resumen Global & Dashboard Integrador'
+            };
+            document.getElementById('module-title').innerText = titles[modId];
+
+            const badge = document.getElementById('status-badge');
+            if (modId === 'm5') {
+                badge.innerText = "Informe Global";
+                badge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-teal-500/20 text-teal-400 border border-teal-500/30";
+                updateDashboard();
+            } else if (quizState[modId].evaluated) {
+                badge.innerText = "Módulo Evaluado";
+                badge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-teal-500/20 text-teal-400 border border-teal-500/30";
+            } else {
+                badge.innerText = "Sin Evaluar";
+                badge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700";
+            }
+        }
+
+        // OPTION SELECTION
+        function selectOption(qId, letter) {
+            const modId = qId.split('_')[0];
+            if (quizState[modId].evaluated) return;
+
+            quizState[modId].answers[qId] = letter;
+
+            ['A', 'B', 'C', 'D'].forEach(o => {
+                const el = document.getElementById(`opt-${qId}-${o}`);
+                if (el) el.classList.remove('selected');
+            });
+
+            const selectedEl = document.getElementById(`opt-${qId}-${letter}`);
+            if (selectedEl) selectedEl.classList.add('selected');
+        }
+
+        // MODULE EVALUATION LOGIC
+        function evaluateModule(modId) {
+            const state = quizState[modId];
+            const questions = questionsData[modId];
+            state.evaluated = true;
+
+            let correctCount = 0;
+
+            questions.forEach(q => {
+                let userAns = null;
+                if (q.type === 'mcq') {
+                    userAns = state.answers[q.id] || null;
+                } else {
+                    const inp = document.getElementById(`input-${q.id}`);
+                    userAns = inp ? parseFloat(inp.value) : null;
+                    if (isNaN(userAns)) userAns = null;
+                    state.answers[q.id] = userAns;
+                }
+
+                const feedbackEl = document.getElementById(`feedback-${q.id}`);
+                feedbackEl.classList.remove('hidden');
+
+                let isCorrect = false;
+                if (q.type === 'mcq') {
+                    isCorrect = (userAns === q.correct);
+                } else {
+                    if (userAns !== null) {
+                        isCorrect = Math.abs(userAns - q.correct) < 0.05;
+                    }
+                }
+
+                if (isCorrect) {
+                    correctCount++;
+                    feedbackEl.className = "p-4 rounded-xl text-xs space-y-1 mt-4 bg-teal-500/10 border border-teal-500/30 text-teal-200";
+                    feedbackEl.innerHTML = `<div class="font-bold flex items-center space-x-1.5 text-teal-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        <span>¡Respuesta Correcta!</span>
+                    </div><div>${q.exp}</div>`;
+                } else {
+                    feedbackEl.className = "p-4 rounded-xl text-xs space-y-1 mt-4 bg-rose-500/10 border border-rose-500/30 text-rose-200";
+                    feedbackEl.innerHTML = `<div class="font-bold flex items-center space-x-1.5 text-rose-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        <span>Respuesta Incorrecta (Tu registro: ${userAns !== null ? userAns : 'Sin responder'})</span>
+                    </div><div>${q.exp}</div>`;
+                }
+            });
+
+            // Update Badge Text
+            const badge = document.getElementById(`badge-${modId}`);
+            badge.innerText = `${correctCount}/10`;
+            badge.className = correctCount >= 7 ? "text-xs px-2 py-0.5 rounded bg-teal-500/20 text-teal-400 font-bold" : "text-xs px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold";
+
+            document.getElementById('status-badge').innerText = "Módulo Evaluado";
+            document.getElementById('status-badge').className = "px-3 py-1 rounded-full text-xs font-semibold bg-teal-500/20 text-teal-400 border border-teal-500/30";
+
+            updateGlobalProgress();
+        }
+
+        // GLOBAL PROGRESS BAR UPDATE
+        function updateGlobalProgress() {
+            let totalEvaluated = 0;
+            ['m1', 'm2', 'm3', 'm4'].forEach(m => {
+                if (quizState[m].evaluated) totalEvaluated++;
+            });
+
+            const percent = Math.round((totalEvaluated / 4) * 100);
+            document.getElementById('global-progress-text').innerText = `${percent}%`;
+            document.getElementById('global-progress-bar').style.width = `${percent}%`;
+        }
+
+        // DASHBOARD (MODULE 5) UPDATE
+        function updateDashboard() {
+            let totalScore = 0;
+            let modulesEvaluatedCount = 0;
+            const recs = [];
+
+            ['m1', 'm2', 'm3', 'm4'].forEach(m => {
+                if (quizState[m].evaluated) {
+                    modulesEvaluatedCount++;
+                    let mScore = 0;
+                    questionsData[m].forEach(q => {
+                        const userAns = quizState[m].answers[q.id];
+                        if (q.type === 'mcq') {
+                            if (userAns === q.correct) mScore++;
+                        } else {
+                            if (userAns !== null && Math.abs(userAns - q.correct) < 0.05) mScore++;
+                        }
+                    });
+
+                    totalScore += mScore;
+
+                    const fill = document.getElementById(`${m}-bar-fill`);
+                    const text = document.getElementById(`${m}-bar-text`);
+                    fill.style.width = `${(mScore / 10) * 100}%`;
+                    text.innerText = `${mScore}/10 Aciertos (${Math.round((mScore/10)*100)}%)`;
+
+                    if (mScore < 7) {
+                        const moduleNames = {
+                            m1: 'M1: Operatoria con Números Reales y Finanzas',
+                            m2: 'M2: Álgebra, Factorización y Ecuaciones',
+                            m3: 'M3: Organización, Manejo e Interpretación de Datos',
+                            m4: 'M4: Combinatoria y Probabilidad Clásica'
+                        };
+                        recs.push(`• Reforzar el <strong>${moduleNames[m]}</strong>: Revisa los reactivos incorrectos y sus explicaciones matemáticas.`);
+                    }
+                }
+            });
+
+            const globalPercent = Math.round((totalScore / 40) * 100);
+            document.getElementById('dash-percentage').innerText = `${globalPercent}%`;
+            document.getElementById('dash-score-sub').innerText = `${totalScore} de 40 aciertos totales`;
+
+            const strokeDash = 377 - (377 * globalPercent) / 100;
+            document.getElementById('score-circle').style.strokeDashoffset = strokeDash;
+
+            const recBox = document.getElementById('recommendations-box');
+            if (modulesEvaluatedCount === 0) {
+                recBox.innerHTML = `<p class="italic text-slate-400">Completa y evalúa los módulos individuales para generar tu plan de repaso personalizado.</p>`;
+            } else if (recs.length === 0) {
+                recBox.innerHTML = `<div class="p-4 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-300 font-semibold">
+                    ¡Felicidades! Has alcanzado un excelente nivel de preparación para el Examen Tec Avanza en todas las áreas evaluadas.
+                </div>`;
+            } else {
+                recBox.innerHTML = `<div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 space-y-1">
+                    <p class="font-bold text-amber-400">Módulos sugeridos para repaso intensivo:</p>
+                    ${recs.map(r => `<p>${r}</p>`).join('')}
+                </div>`;
+            }
+        }
+
+        // ON PAGE LOAD
+        window.onload = function() {
+            initQuestions();
+        };
+    </script>
+</body>
+</html>
